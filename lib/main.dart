@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 void main() {
   runApp(MaterialApp(
@@ -17,6 +18,24 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   String petName = "Your Pet";
   int happinessLevel = 50;
   int hungerLevel = 50;
+
+  Timer? _hungerTimer;
+
+  @override
+  void initState() {
+    super.initState();
+      setState(() {
+        _hungerTimer = Timer.periodic(Duration(seconds: 30), (timer) {
+        _decreaseHunger();
+      });
+    });
+  }
+
+   @override
+  void dispose() {
+    _hungerTimer?.cancel();
+    super.dispose();
+  }
 
   // Function to increase happiness and update hunger when playing with the pet
   void _playWithPet() {
@@ -54,12 +73,21 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
 
     String _getPetMood() {
     if (happinessLevel > 70) {
-      return "Happy 😄";  // Happy emoji
+      return "Happy 😄";
     } else if (happinessLevel > 50) {
-      return "Neutral 😐";  // Neutral emoji
+      return "Neutral 😐";
     } else {
-      return "Unhappy ☹️";  // Sad emoji
+      return "Unhappy ☹️";
     }
+  }
+
+  void _decreaseHunger() {
+    setState(() {
+      hungerLevel = (hungerLevel - 5).clamp(0, 100);
+      if (hungerLevel > 70) {
+        happinessLevel = (happinessLevel - 10).clamp(0, 100);
+      }
+    });
   }
 
   @override
