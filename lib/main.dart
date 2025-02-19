@@ -7,6 +7,8 @@ void main() {
 }
 
 class DigitalPetApp extends StatefulWidget {
+  const DigitalPetApp({super.key});
+
   @override
   _DigitalPetAppState createState() => _DigitalPetAppState();
 }
@@ -50,6 +52,16 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
     }
   }
 
+    String _getPetMood() {
+    if (happinessLevel > 70) {
+      return "Happy 😄";  // Happy emoji
+    } else if (happinessLevel > 50) {
+      return "Neutral 😐";  // Neutral emoji
+    } else {
+      return "Unhappy ☹️";  // Sad emoji
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,6 +85,10 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
             Text(
               'Hunger Level: $hungerLevel',
               style: TextStyle(fontSize: 20.0),
+            ),
+            Text(
+              'Mood: ${_getPetMood()}',
+              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 32.0),
             ElevatedButton(
