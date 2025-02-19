@@ -18,6 +18,7 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   String petName = "Your Pet";
   int happinessLevel = 50;
   int hungerLevel = 50;
+  final _textController = TextEditingController();
 
   Timer? _hungerTimer;
 
@@ -102,7 +103,36 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
           children: <Widget>[
             Text(
               'Name: $petName',
-              style: TextStyle(fontSize: 20.0),
+              style: TextStyle(
+                fontSize: 20.0,
+                color: (happinessLevel > 70) ? Colors.green : (happinessLevel > 30) ? Colors.amber : Colors.red,
+              ),
+            ),
+            TextField(
+              // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              controller: _textController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Rename Pet',
+                hintText: 'Choose a fun name for your pet!',
+                suffixIcon: IconButton(
+                  onPressed: () {
+                    _textController.clear();
+                  },
+                  icon: const Icon(Icons.clear),
+                ),
+              ),
+            ),
+             MaterialButton(
+              onPressed: () {
+                setState(() {
+                  petName = _textController.text;
+                  _textController.clear();
+                });
+              },
+              color: Colors.blue,
+              child: const Text('Rename here',
+                  style: TextStyle(color: Colors.white)),
             ),
             SizedBox(height: 16.0),
             Text(

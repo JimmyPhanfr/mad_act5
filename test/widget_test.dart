@@ -13,7 +13,11 @@ import 'package:mad_act5/main.dart';
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
+<<<<<<< HEAD
     await tester.pumpWidget(const DigitalPetApp());
+=======
+    await tester.pumpWidget(DigitalPetApp());
+>>>>>>> ba0fd15cfbd1b033f43b1e67dfe905737ce382b2
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
