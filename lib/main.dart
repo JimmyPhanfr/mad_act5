@@ -18,9 +18,12 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   String petName = "Your Pet";
   int happinessLevel = 50;
   int hungerLevel = 50;
+  String gameMessage = "";
   final _textController = TextEditingController();
 
   Timer? _hungerTimer;
+  Timer? _winTimer;
+  bool _isHappinessHigh = false;
 
   @override
   void initState() {
@@ -84,11 +87,39 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
 
   void _decreaseHunger() {
     setState(() {
-      hungerLevel = (hungerLevel - 5).clamp(0, 100);
+      hungerLevel = (hungerLevel + 5).clamp(0, 100);
       if (hungerLevel > 70) {
         happinessLevel = (happinessLevel - 10).clamp(0, 100);
       }
     });
+     _checkGameOver();
+    _checkWinCondition();
+  }
+
+  void _checkWinCondition() {
+    if (happinessLevel > 80) {
+      if (!_isHappinessHigh) {
+        _isHappinessHigh = true;
+        _winTimer = Timer(Duration(seconds: 3), () {
+          setState(() {
+            gameMessage = "You Win!";
+          });
+        });
+      }
+    } else {
+      _isHappinessHigh = false;
+      _winTimer?.cancel();
+    }
+  }
+
+  void _checkGameOver() {
+    if (hungerLevel == 100 && happinessLevel <= 10) {
+      setState(() {
+        gameMessage = "Game Over!";
+      });
+      _hungerTimer?.cancel();
+      _winTimer?.cancel();
+    }
   }
 
   @override
@@ -101,6 +132,9 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Container(
+              
+            )
             Text(
               'Name: $petName',
               style: TextStyle(
@@ -148,6 +182,11 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
               'Mood: ${_getPetMood()}',
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
+            if (gameMessage.isNotEmpty)
+              Text(
+                gameMessage,
+                style: TextStyle(fontSize: 30.0, fontWeight: FontWeight.bold, color: Colors.red),
+              ),
             SizedBox(height: 32.0),
             ElevatedButton(
               onPressed: _playWithPet,
