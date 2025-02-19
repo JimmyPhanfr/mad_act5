@@ -132,9 +132,6 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(
-              
-            )
             Text(
               'Name: $petName',
               style: TextStyle(
