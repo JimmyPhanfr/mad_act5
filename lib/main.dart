@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+/*
+Jimmy Phan
+Richard Chai
+John Rollins
+*/
+
 void main() {
   runApp(MaterialApp(
     home: DigitalPetApp(),
@@ -17,27 +23,27 @@ class DigitalPetApp extends StatefulWidget {
 class _DigitalPetAppState extends State<DigitalPetApp> {
   String petName = "Your Pet";
   int happinessLevel = 50;
-  int hungerLevel = 50;
+  int hungerLevel = 50, energyLevel = 50;
   String gameMessage = "";
   final _textController = TextEditingController();
 
-  Timer? _hungerTimer;
+  Timer? _statusTimer;
   Timer? _winTimer;
   bool _isHappinessHigh = false;
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      _hungerTimer = Timer.periodic(Duration(seconds: 30), (timer) {
-        _decreaseHunger();
+      setState(() {
+        _statusTimer = Timer.periodic(Duration(seconds: 30), (timer) {
+        _decreaseStatus();
       });
     });
   }
 
   @override
   void dispose() {
-    _hungerTimer?.cancel();
+    _statusTimer?.cancel();
     super.dispose();
   }
 
@@ -85,11 +91,13 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
     }
   }
 
-  void _decreaseHunger() {
+  void _decreaseStatus() {
     setState(() {
       hungerLevel = (hungerLevel + 5).clamp(0, 100);
+      happinessLevel = (happinessLevel - 5).clamp(0, 100);
+      energyLevel = (energyLevel - 5).clamp(0, 100);
       if (hungerLevel > 70) {
-        happinessLevel = (happinessLevel - 10).clamp(0, 100);
+        happinessLevel = (happinessLevel - 5).clamp(0, 100);
       }
     });
     _checkGameOver();
@@ -101,9 +109,7 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
       if (!_isHappinessHigh) {
         _isHappinessHigh = true;
         _winTimer = Timer(Duration(seconds: 3), () {
-          setState(() {
-            gameMessage = "You Win!";
-          });
+          _showGameMessage("You Win!");
         });
       }
     } else {
@@ -114,12 +120,52 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
 
   void _checkGameOver() {
     if (hungerLevel == 100 && happinessLevel <= 10) {
-      setState(() {
-        gameMessage = "Game Over!";
-      });
-      _hungerTimer?.cancel();
+      _showGameMessage("Game Over!");
+      _statusTimer?.cancel();
       _winTimer?.cancel();
     }
+  }
+
+  void _showGameMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message, style: TextStyle(fontSize: 18.0)),
+        backgroundColor: Colors.black87,
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
+
+  void _decreaseEnergy() {
+    setState(() {
+      energyLevel = (energyLevel - 5).clamp(0, 100);
+    });
+  }
+
+
+  Widget _buildEnergyBar() {
+    return Column(
+      children: [
+        Text('Energy Level:', style: TextStyle(fontSize: 20.0)),
+        SizedBox(height: 5.0),
+        Container(
+          width: 200,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black, width: 2),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: LinearProgressIndicator(
+            value: energyLevel / 100,
+            backgroundColor: Colors.grey[300],
+            valueColor: AlwaysStoppedAnimation<Color>(
+              energyLevel > 50 ? Colors.green : energyLevel > 20 ? Colors.orange : Colors.red,
+            ),
+            minHeight: 10.0,
+          ),
+        ),
+      ],
+    );
   }
 
   @override
@@ -195,14 +241,6 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
               'Mood: ${_getPetMood()}',
               style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
             ),
-            if (gameMessage.isNotEmpty)
-              Text(
-                gameMessage,
-                style: TextStyle(
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red),
-              ),
             SizedBox(height: 32.0),
             ElevatedButton(
               onPressed: _playWithPet,
@@ -213,6 +251,16 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
               onPressed: _feedPet,
               child: Text('Feed Your Pet'),
             ),
+            _buildEnergyBar(),
+            DropdownButton<String>(
+              items: <String>['Play Ball', 'Jump', 'Run', 'Nap'].map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (_) {},
+            )
           ],
         ),
       ),
