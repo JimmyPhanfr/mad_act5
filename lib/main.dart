@@ -41,7 +41,7 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
     });
   }
 
-   @override
+  @override
   void dispose() {
     _statusTimer?.cancel();
     super.dispose();
@@ -81,7 +81,7 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
     }
   }
 
-    String _getPetMood() {
+  String _getPetMood() {
     if (happinessLevel > 70) {
       return "Happy 😄";
     } else if (happinessLevel > 50) {
@@ -100,7 +100,7 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
         happinessLevel = (happinessLevel - 5).clamp(0, 100);
       }
     });
-     _checkGameOver();
+    _checkGameOver();
     _checkWinCondition();
   }
 
@@ -178,11 +178,27 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Center(
+              child: Container(
+                width:50
+                height: 50
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/Dog.webp'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
             Text(
               'Name: $petName',
               style: TextStyle(
                 fontSize: 20.0,
-                color: (happinessLevel > 70) ? Colors.green : (happinessLevel > 30) ? Colors.amber : Colors.red,
+                color: (happinessLevel > 70)
+                    ? Colors.green
+                    : (happinessLevel > 30)
+                        ? Colors.amber
+                        : Colors.red,
               ),
             ),
             TextField(
@@ -200,7 +216,7 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
                 ),
               ),
             ),
-             MaterialButton(
+            MaterialButton(
               onPressed: () {
                 setState(() {
                   petName = _textController.text;
