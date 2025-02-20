@@ -116,6 +116,15 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
               onPressed: _feedPet,
               child: Text('Feed Your Pet'),
             ),
+            DropdownButton<String>(
+              items: <String>['Play Ball', 'Jump', 'Run', 'Nap'].map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+              onChanged: (_) {},
+            )
           ],
         ),
       ),
