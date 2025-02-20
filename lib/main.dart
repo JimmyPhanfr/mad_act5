@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+/*
+Jimmy Phan
+Richard Chai
+John Rollins
+*/
+
 void main() {
   runApp(MaterialApp(
     home: DigitalPetApp(),
@@ -21,7 +27,7 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   String gameMessage = "";
   final _textController = TextEditingController();
 
-  Timer? _hungerTimer;
+  Timer? _statusTimer;
   Timer? _winTimer;
   bool _isHappinessHigh = false;
 
@@ -29,15 +35,15 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   void initState() {
     super.initState();
       setState(() {
-        _hungerTimer = Timer.periodic(Duration(seconds: 30), (timer) {
-        _decreaseHunger();
+        _statusTimer = Timer.periodic(Duration(seconds: 30), (timer) {
+        _decreaseStatus();
       });
     });
   }
 
    @override
   void dispose() {
-    _hungerTimer?.cancel();
+    _statusTimer?.cancel();
     super.dispose();
   }
 
@@ -85,11 +91,13 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
     }
   }
 
-  void _decreaseHunger() {
+  void _decreaseStatus() {
     setState(() {
       hungerLevel = (hungerLevel + 5).clamp(0, 100);
+      happinessLevel = (happinessLevel - 5).clamp(0, 100);
+      energyLevel = (energyLevel - 5).clamp(0, 100);
       if (hungerLevel > 70) {
-        happinessLevel = (happinessLevel - 10).clamp(0, 100);
+        happinessLevel = (happinessLevel - 5).clamp(0, 100);
       }
     });
      _checkGameOver();
@@ -113,7 +121,7 @@ class _DigitalPetAppState extends State<DigitalPetApp> {
   void _checkGameOver() {
     if (hungerLevel == 100 && happinessLevel <= 10) {
       _showGameMessage("Game Over!");
-      _hungerTimer?.cancel();
+      _statusTimer?.cancel();
       _winTimer?.cancel();
     }
   }
